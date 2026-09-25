@@ -1,0 +1,30 @@
+cyber-defense-agents/
+├── AGENTS.md
+├── README.md
+├── docs/
+│   ├── 00_contexto.md
+│   ├── 01_estado_arte.md
+│   ├── 02_arquitectura.md
+│   ├── 03_metodologia.md
+│   ├── 04_cronograma.md
+│   ├── 05_evaluacion.md
+│   └── 06_bibliografia.bib
+├── infra/
+│   ├── docker-compose.base.yml
+│   ├── wazuh/
+│   ├── suricata/
+│   ├── zeek/
+│   └── thehive/
+├── labs/
+│   ├── lab1_deteccion/
+│   ├── lab2_respuesta/
+│   └── lab3_hunting/
+├── agents/
+│   ├── triage_agent/
+│   ├── response_agent/
+│   └── hunting_agent/
+├── scripts/
+├── notebooks/
+├── data/
+├── informe/
+└── assets/

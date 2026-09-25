@@ -1,0 +1,23 @@
+services:
+  synthetic-events:
+    image: python:3.12-slim
+    container_name: cyberdefense-synthetic-events
+    environment:
+      EVENT_INTERVAL_SECONDS: ${EVENT_INTERVAL_SECONDS:-5}
+    command: ["python", "/workspace/scripts/generate_synthetic_events.py"]
+    volumes:
+      - ../scripts:/workspace/scripts:ro
+      - ../data:/workspace/data
+    networks:
+      - cyberdefense_internal
+    healthcheck:
+      test: ["CMD", "python", "-c", "from pathlib import Path; raise SystemExit(0 if Path('/workspace/data/heartbeat').exists() else 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+
+networks:
+  cyberdefense_internal:
+    name: cyberdefense_internal
+    internal: true
