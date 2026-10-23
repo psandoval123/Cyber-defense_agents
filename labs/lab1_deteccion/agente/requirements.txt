@@ -1,0 +1,4 @@
+# Dependencias del agente de detección (Lab 1).
+# LLM local vía Ollama (sin clave de API).
+ollama>=0.4.0
+python-dotenv>=1.0.0

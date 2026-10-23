@@ -1,0 +1,119 @@
+# Laboratorio 1 — Detección de reconocimiento automatizado con un agente de ciberdefensa
+#
+# Escenario (lado AZUL / defensivo):
+#   Un adversario emulado ejecuta reconocimiento (escaneo de puertos y
+#   enumeración web) contra una víctima dentro de una red Docker AISLADA.
+#   Un sensor Suricata observa ese tráfico y genera alertas. Un agente de IA
+#   (LLM local vía Ollama, patrón ReAct) lee esas alertas, las clasifica, las
+#   mapea a MITRE ATT&CK, abre un caso y produce un informe de incidente.
+#
+# Servicios:
+#   - victima:   servicio objetivo con puertos/tecnologías que enumerar (nginx).
+#                SOLO en la red interna aislada; sin salida a internet.
+#   - suricata:  sensor IDS. Comparte el namespace de red de la víctima
+#                (network_mode: service:victima) para observar TODO el tráfico
+#                que llega a la víctima. Escribe eve.json en ./output/suricata.
+#   - atacante:  adversario emulado (nmap/whatweb/gobuster). Solo en la red
+#                interna; su lista blanca restringe el objetivo a la víctima.
+#   - agente:    agente de detección (Python + Ollama). Lee las alertas desde
+#                el volumen compartido y consulta el modelo. NO toca la red
+#                interna del ataque; vive en la red de analítica junto a Ollama.
+#   - ollama:    runtime del LLM local. Sirve el modelo al agente.
+#
+# Principio de aislamiento (docs/02_arquitectura.md): la red `interna` es
+# `internal: true`; nada del ataque es alcanzable desde el exterior.
+
+services:
+  victima:
+    image: nginx:1.27-alpine
+    container_name: lab1-victima
+    networks:
+      interna:
+        ipv4_address: 172.28.0.10
+    # Sin `ports:` a propósito: la víctima no se publica al host.
+    restart: "no"
+
+  suricata:
+    image: jasonish/suricata:7.0
+    container_name: lab1-suricata
+    depends_on:
+      - victima
+    # Comparte la pila de red de la víctima para ver su tráfico (af-packet eth0).
+    network_mode: "service:victima"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_NICE
+    volumes:
+      - ./sensor/suricata/rules:/rules:ro
+      - ./output/suricata:/var/log/suricata
+    # Carga EXCLUSIVAMENTE nuestras reglas del laboratorio (-S) sobre la
+    # interfaz de la víctima. eve.json queda en ./output/suricata.
+    command: ["-i", "eth0", "-S", "/rules/local.rules", "-v"]
+    restart: "no"
+
+  atacante:
+    build:
+      context: ./atacante
+      dockerfile: Dockerfile
+    container_name: lab1-atacante
+    depends_on:
+      - victima
+      - suricata
+    networks:
+      interna:
+        ipv4_address: 172.28.0.20
+    environment:
+      LAB_OBJETIVO: "172.28.0.10"
+      # Lista blanca: el adversario emulado solo puede apuntar aquí.
+      LAB_OBJETIVOS_PERMITIDOS: "172.28.0.10"
+    volumes:
+      - ./output:/output
+    # Queda en espera; el guion de reconocimiento se lanza desde la guía.
+    command: ["sleep", "infinity"]
+    restart: "no"
+
+  ollama:
+    image: ollama/ollama:0.5.4
+    container_name: lab1-ollama
+    networks:
+      - analitica
+    volumes:
+      - ollama_models:/root/.ollama
+    # Sin `ports:` necesarios para el lab; descomenta si quieres usarlo desde el host.
+    # ports:
+    #   - "11434:11434"
+    restart: "no"
+
+  agente:
+    build:
+      context: ./agente
+      dockerfile: Dockerfile
+    container_name: lab1-agente
+    depends_on:
+      - ollama
+    env_file:
+      - .env
+    networks:
+      - analitica
+    volumes:
+      # Lee las alertas del sensor (solo lectura) y escribe casos/informes.
+      - ./output:/output
+    command: ["sleep", "infinity"]
+    restart: "no"
+
+networks:
+  # Red del ataque: víctima <-> atacante <-> sensor. SIN salida a internet.
+  interna:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+  # Red de analítica: agente <-> Ollama. Aislada de la red del ataque.
+  analitica:
+    driver: bridge
+    internal: true
+
+volumes:
+  ollama_models:
