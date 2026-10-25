@@ -24,10 +24,10 @@ OUTPUT_DIR = Path("/output/atacante")
 
 # Objetivo y lista blanca (defensa en profundidad: el adversario emulado NUNCA
 # puede apuntar fuera de la víctima del laboratorio).
-OBJETIVO = os.getenv("LAB_OBJETIVO", "172.28.0.10")
+OBJETIVO = os.getenv("LAB_OBJETIVO", "victima")
 PERMITIDOS = {
     ip.strip()
-    for ip in os.getenv("LAB_OBJETIVOS_PERMITIDOS", "172.28.0.10").split(",")
+    for ip in os.getenv("LAB_OBJETIVOS_PERMITIDOS", "victima").split(",")
     if ip.strip()
 }
 

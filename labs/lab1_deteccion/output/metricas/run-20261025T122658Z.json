@@ -1,0 +1,21 @@
+{
+  "corrida": "20261025T122658Z",
+  "modelo": "llama3.2:3b",
+  "inicio": "2026-10-25T12:26:58.377238+00:00",
+  "fin": "2026-10-25T12:28:57.890842+00:00",
+  "duracion_s": 119.51,
+  "pasos": 5,
+  "herramientas_usadas": [
+    "consultar_alertas",
+    "enriquecer_attack",
+    "enriquecer_attack",
+    "crear_caso",
+    "generar_informe"
+  ],
+  "num_llamadas_herramienta": 5,
+  "veredicto": "reconocimiento",
+  "tecnicas_detectadas": [
+    "T1046",
+    "T1595.003"
+  ]
+}

@@ -34,8 +34,11 @@ ATTACK: dict[str, dict[str, str]] = {
 
 
 def buscar_tecnica(tid: str) -> dict[str, str]:
-    """Devuelve la ficha de una técnica, o una ficha 'desconocida'."""
-    tid = (tid or "").strip().upper()
+    """Devuelve la ficha de una técnica, o una ficha 'desconocida'.
+
+    Tolera identificadores con corchetes o espacios (p. ej. "[T1046]").
+    """
+    tid = (tid or "").strip().upper().strip("[]").strip()
     if tid in ATTACK:
         return {"tecnica": tid, **ATTACK[tid]}
     return {

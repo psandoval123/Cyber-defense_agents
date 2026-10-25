@@ -27,9 +27,10 @@ services:
   victima:
     image: nginx:1.27-alpine
     container_name: lab1-victima
+    # Hostname por el que el atacante y el agente la referencian (DNS interno).
+    hostname: victima
     networks:
-      interna:
-        ipv4_address: 172.28.0.10
+      - interna
     # Sin `ports:` a propósito: la víctima no se publica al host.
     restart: "no"
 
@@ -61,12 +62,11 @@ services:
       - victima
       - suricata
     networks:
-      interna:
-        ipv4_address: 172.28.0.20
+      - interna
     environment:
-      LAB_OBJETIVO: "172.28.0.10"
+      LAB_OBJETIVO: "victima"
       # Lista blanca: el adversario emulado solo puede apuntar aquí.
-      LAB_OBJETIVOS_PERMITIDOS: "172.28.0.10"
+      LAB_OBJETIVOS_PERMITIDOS: "victima"
     volumes:
       - ./output:/output
     # Queda en espera; el guion de reconocimiento se lanza desde la guía.
@@ -76,8 +76,12 @@ services:
   ollama:
     image: ollama/ollama:0.5.4
     container_name: lab1-ollama
+    # `analitica` para servir al agente; `externa` SOLO para poder descargar el
+    # modelo desde registry.ollama.ai la primera vez (ollama pull). El agente no
+    # está en `externa`, y la red del ataque (`interna`) sigue sin internet.
     networks:
       - analitica
+      - externa
     volumes:
       - ollama_models:/root/.ollama
     # Sin `ports:` necesarios para el lab; descomenta si quieres usarlo desde el host.
@@ -104,16 +108,18 @@ services:
 
 networks:
   # Red del ataque: víctima <-> atacante <-> sensor. SIN salida a internet.
+  # Sin subred fija: Docker asigna una libre (RFC1918, cubierta por HOME_NET),
+  # para no colisionar con otras redes del host.
   interna:
     driver: bridge
     internal: true
-    ipam:
-      config:
-        - subnet: 172.28.0.0/24
   # Red de analítica: agente <-> Ollama. Aislada de la red del ataque.
   analitica:
     driver: bridge
     internal: true
+  # Salida a internet SOLO para que Ollama descargue el modelo (ollama pull).
+  externa:
+    driver: bridge
 
 volumes:
   ollama_models:

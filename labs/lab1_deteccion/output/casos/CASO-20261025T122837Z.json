@@ -1,0 +1,17 @@
+{
+  "id": "CASO-20261025T122837Z",
+  "creado": "2026-10-25T12:28:37.247248+00:00",
+  "titulo": "Reconocimiento en curso",
+  "severidad": "alta",
+  "tecnicas": [
+    "T1046",
+    "T1595.003"
+  ],
+  "observables": [
+    "ip=172.30.0.3",
+    "ip=172.30.0.2"
+  ],
+  "resumen": "Se ha detectado una serie de alertas de red con firmas desconocidas en el host victima, indicando posibles actividades de reconocimiento.",
+  "estado": "abierto",
+  "origen": "agente-deteccion-lab1"
+}

@@ -1,0 +1,22 @@
+{
+  "generado": "2026-10-25T12:31:41.726604Z",
+  "n_alertas": 10252,
+  "n_corridas": 3,
+  "tecnicas_esperadas": [
+    "T1046",
+    "T1592.002",
+    "T1595.003"
+  ],
+  "tecnicas_sensor": [
+    "T1046",
+    "T1592.002",
+    "T1595.003"
+  ],
+  "mttd_s": 0.15,
+  "cobertura_attack": 1.0,
+  "precision_prom": 1.0,
+  "recall_prom": 0.67,
+  "f1_prom": 0.8,
+  "automatizacion_prom": 1.0,
+  "reproducibilidad": 1.0
+}

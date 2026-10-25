@@ -2,8 +2,8 @@
 #
 # Objetivo: detectar las técnicas de reconocimiento del adversario emulado y
 # dejar en el mensaje la técnica MITRE ATT&CK, para que el agente la correlacione.
-# $HOME_NET incluye 172.16.0.0/12 por defecto, así que la víctima (172.28.0.10)
-# queda cubierta.
+# $HOME_NET incluye los rangos RFC1918 por defecto, así que la víctima
+# (IP asignada por Docker en la red interna) queda cubierta.
 #
 # Formato del msg: "LAB-RECON <descripción> [<Txxxx>]"
 

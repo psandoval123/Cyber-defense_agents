@@ -47,12 +47,15 @@ flowchart LR
     AG <-->|LLM local| L[ollama]
 ```
 
-- **Red `interna` (`internal: true`):** `victima` (172.28.0.10) y `atacante`
-  (172.28.0.20). Sin salida a internet; nada accesible desde el host.
+- **Red `interna` (`internal: true`):** `victima` y `atacante`, referenciados
+  por nombre de servicio (DNS interno de Docker; sin IP fija, para no colisionar
+  con otras redes del host). Sin salida a internet; nada accesible desde el host.
 - **Sensor `suricata`:** comparte el namespace de red de la víctima para observar
   todo su tráfico; escribe alertas en `output/suricata/eve.json`.
 - **Red `analitica` (aislada):** `agente` y `ollama`. El agente lee las alertas
-  del volumen compartido y consulta el modelo local.
+  del volumen compartido y consulta el modelo local; no tiene internet. `ollama`
+  tiene además una salida (`externa`) usada **solo** para descargar el modelo la
+  primera vez (`ollama pull`).
 
 ## 4. Requisitos previos
 
@@ -89,11 +92,11 @@ docker compose exec ollama ollama pull llama3.2:3b
 **5.4. Verifica el aislamiento y que el sensor está activo:**
 
 ```bash
-# El atacante ve a la víctima en la red interna:
-docker compose exec atacante ping -c 2 172.28.0.10
+# El atacante resuelve y alcanza a la víctima en la red interna:
+docker compose exec atacante nmap -p80 -Pn victima
 
-# La víctima NO tiene salida a internet (debe fallar):
-docker compose exec atacante sh -c "nslookup google.com || echo 'OK: red aislada'"
+# No hay salida a internet (no resuelve dominios externos):
+docker compose exec atacante sh -c "getent hosts google.com && echo 'TIENE DNS externo (revisar)' || echo 'OK: red aislada'"
 
 # El sensor está escuchando (debe listar la interfaz eth0):
 docker compose logs suricata | tail -n 5
