@@ -24,6 +24,15 @@ docker compose exec ollama ollama list   # debe listar llama3.2:3b
 > Deja el stack levantado. Ya no necesitas internet para la demo (salvo que
 > recrees el contenedor de Ollama).
 
+**Corrida de calentamiento (justo antes de exponer).** El modelo se descarga de
+la RAM tras un rato sin uso; la primera corrida "en frío" puede tardar 4-5 min.
+Haz una corrida de prueba para dejarlo caliente y que la de la demo vaya a ~2 min:
+
+```bash
+docker compose exec atacante python3 recon_sim.py >/dev/null 2>&1
+docker compose exec -T agente python3 agente_deteccion.py >/dev/null 2>&1
+```
+
 ---
 
 ## 1. Discurso de apertura (1 min)
@@ -67,7 +76,8 @@ Verás en vivo: `nmap` (puertos/versiones), `whatweb` (nginx), `gobuster`
 grep -c '"event_type":"alert"' output/suricata/eve.json
 
 # Desglose por firma (cada una trae su técnica MITRE):
-docker compose exec agente python3 - <<'PY'
+# OJO: el flag -T es obligatorio con heredoc (sin él: "input device is not a TTY").
+docker compose exec -T agente python3 - <<'PY'
 import json, collections
 c=collections.Counter()
 for l in open('/output/suricata/eve.json'):
@@ -98,9 +108,25 @@ Narra su ciclo **ReAct** mientras aparece en pantalla:
 
 ## 6. Mostrar los entregables que generó (30 s)
 
+> No pegues comentarios `# ...` en zsh: por defecto no los trata como comentario
+> y `cat` intentará abrirlos como archivos. Usa los comandos limpios:
+
+El caso (expediente del incidente):
+
 ```bash
-cat output/casos/$(ls -t output/casos | head -1)        # el caso
-cat output/informes/$(ls -t output/informes | head -1)  # el informe con recomendaciones
+cat output/casos/$(ls -t output/casos | head -1)
+```
+
+El informe final con recomendaciones:
+
+```bash
+cat output/informes/$(ls -t output/informes | head -1)
+```
+
+La traza del razonamiento del agente (evidencia de **trazabilidad**):
+
+```bash
+tail -n 20 output/trazas/$(ls -t output/trazas | head -1)
 ```
 
 ## 7. Las métricas (⭐ cierre con datos, 1 min)
