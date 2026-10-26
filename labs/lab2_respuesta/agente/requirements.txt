@@ -1,0 +1,3 @@
+# Dependencias del agente de respuesta (Lab 2). LLM local vía Ollama.
+ollama>=0.4.0
+python-dotenv>=1.0.0

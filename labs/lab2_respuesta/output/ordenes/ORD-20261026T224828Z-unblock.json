@@ -1,0 +1,11 @@
+{
+  "id": "ORD-20261026T224828Z-unblock",
+  "ip": "192.168.16.3",
+  "accion": "unblock",
+  "estado": "aplicada",
+  "creado": "2026-10-26T22:48:28.467366+00:00",
+  "origen": "response-agent-lab2",
+  "detalle": "ok",
+  "regla": "(eliminada) INPUT -s 192.168.16.3 -j DROP",
+  "aplicado": "2026-10-26T22:48:28.860691+00:00"
+}

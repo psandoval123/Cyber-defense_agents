@@ -1,0 +1,11 @@
+{
+  "id": "ORD-20261026T224926Z",
+  "ip": "192.168.16.3",
+  "accion": "block",
+  "estado": "aplicada",
+  "creado": "2026-10-26T22:49:26.527605+00:00",
+  "origen": "response-agent-lab2",
+  "detalle": "ok",
+  "regla": "-A INPUT -s 192.168.16.3 -j DROP",
+  "aplicado": "2026-10-26T22:49:27.234923+00:00"
+}

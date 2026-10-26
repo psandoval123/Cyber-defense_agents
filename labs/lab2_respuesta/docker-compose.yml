@@ -1,0 +1,128 @@
+# Laboratorio 2 — Respuesta automatizada a incidentes (contención con agente)
+#
+# Escenario (lado AZUL / defensivo):
+#   Reutiliza el reconocimiento del Lab 1 como incidente de entrada. Un agente de
+#   IA (LLM local, patrón ReAct) identifica la IP atacante a partir de las
+#   alertas del sensor, PROPONE una contención, PIDE APROBACIÓN humana y ordena
+#   el bloqueo. Un componente firewall APLICA el bloqueo (iptables) de forma
+#   reversible y trazable. Finalmente el agente verifica la contención y la mide.
+#
+# Separación decisión/ejecución (docs/02_arquitectura.md): el agente decide y
+# ordena; el firewall aplica. El agente NUNCA tiene privilegios de red.
+#
+# Servicios:
+#   - victima:        servicio objetivo (nginx).
+#   - suricata:       sensor IDS; comparte el namespace de red de la víctima.
+#   - firewall:       aplica/revierte el bloqueo con iptables en el namespace de
+#                     la víctima (NET_ADMIN). Lee las órdenes del agente.
+#   - atacante:       adversario emulado (reconocimiento), para generar el
+#                     incidente y para demostrar el antes/después del bloqueo.
+#   - response_agent: agente de respuesta (Python + Ollama).
+#   - ollama:         runtime del LLM local.
+
+services:
+  victima:
+    image: nginx:1.27-alpine
+    container_name: lab2-victima
+    hostname: victima
+    networks:
+      - interna
+    restart: "no"
+
+  suricata:
+    image: jasonish/suricata:7.0
+    container_name: lab2-suricata
+    depends_on:
+      - victima
+    network_mode: "service:victima"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_NICE
+    volumes:
+      - ./sensor/suricata/rules:/rules:ro
+      - ./output/suricata:/var/log/suricata
+    command: ["-i", "eth0", "-S", "/rules/local.rules", "-v"]
+    restart: "no"
+
+  firewall:
+    build:
+      context: ./firewall
+      dockerfile: Dockerfile
+    container_name: lab2-firewall
+    depends_on:
+      - victima
+    # Comparte el namespace de red de la víctima para aplicar iptables sobre su
+    # tráfico de entrada. Solo necesita NET_ADMIN (no sniffing).
+    network_mode: "service:victima"
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      # Lee las órdenes del agente y escribe confirmaciones/estado.
+      - ./output:/output
+    restart: "no"
+
+  atacante:
+    build:
+      context: ./atacante
+      dockerfile: Dockerfile
+    container_name: lab2-atacante
+    depends_on:
+      - victima
+      - suricata
+    networks:
+      - interna
+    environment:
+      LAB_OBJETIVO: "victima"
+      LAB_OBJETIVOS_PERMITIDOS: "victima"
+    volumes:
+      - ./output:/output
+    command: ["sleep", "infinity"]
+    restart: "no"
+
+  ollama:
+    image: ollama/ollama:0.5.4
+    container_name: lab2-ollama
+    networks:
+      - analitica
+      - externa
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: "no"
+
+  response_agent:
+    build:
+      context: ./agente
+      dockerfile: Dockerfile
+    container_name: lab2-response-agent
+    depends_on:
+      - ollama
+    env_file:
+      - .env
+    networks:
+      - analitica
+    volumes:
+      - ./output:/output
+    # Interactivo para permitir la aprobación humana por teclado.
+    stdin_open: true
+    tty: true
+    command: ["sleep", "infinity"]
+    restart: "no"
+
+networks:
+  # Red del ataque: víctima <-> atacante <-> sensor/firewall. SIN internet.
+  interna:
+    driver: bridge
+    internal: true
+  # Red de analítica: agente <-> Ollama. Aislada de la red del ataque.
+  analitica:
+    driver: bridge
+    internal: true
+  # Salida a internet SOLO para que Ollama descargue el modelo.
+  externa:
+    driver: bridge
+
+volumes:
+  # Volumen propio (autocontenido). El modelo se descarga una vez con
+  # `ollama pull`. Para reutilizar el del Lab 1 y no re-descargar, ver el README.
+  ollama_models:
