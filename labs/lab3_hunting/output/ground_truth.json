@@ -1,0 +1,34 @@
+{
+  "generado": "2026-11-07T19:03:07.603971+00:00",
+  "semilla": 20261107,
+  "ventana_s": 3600,
+  "amenaza": {
+    "tipo": "C2 beaconing",
+    "src": "10.10.10.17",
+    "dst": "192.0.2.66",
+    "dominio": "cdn-sync-telemetry.net",
+    "intervalo_s": 60,
+    "conexiones": 60,
+    "attack": [
+      "T1071.001",
+      "T1571"
+    ]
+  },
+  "benigno_periodico": [
+    {
+      "src": "10.10.10.11",
+      "dst": "200.16.0.2",
+      "service": "ntp",
+      "intervalo_s": 300,
+      "nota": "periódico pero legítimo"
+    },
+    {
+      "src": "10.10.10.12",
+      "dst": "200.16.0.2",
+      "service": "ntp",
+      "intervalo_s": 300,
+      "nota": "periódico pero legítimo"
+    }
+  ],
+  "ruido": "navegación web irregular a múltiples destinos (no es amenaza)"
+}

@@ -22,3 +22,6 @@ venv/
 *.log
 data/events.jsonl
 data/heartbeat
+
+# Lab vector stores (regenerable)
+labs/*/output/chroma/

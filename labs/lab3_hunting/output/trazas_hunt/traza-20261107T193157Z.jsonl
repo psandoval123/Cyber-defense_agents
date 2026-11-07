@@ -1,0 +1,7 @@
+{"nodo": "plan", "hipotesis": "Buscarié conexiones de red con un alto volumen y frecuencia, pero sin contenido relevante o patrones típicos de tráfico normal, para detectar posibles ataques de phishing o malware"}
+{"nodo": "rag", "fuentes": ["dns_tunneling.md", "beaconing.md", "beaconing.md"]}
+{"nodo": "analizar", "periodicos": 3, "dns": false}
+{"nodo": "evaluar", "decision": "refinar"}
+{"nodo": "analizar", "periodicos": 3, "dns": true}
+{"nodo": "evaluar", "decision": "concluir"}
+{"nodo": "veredicto", "veredicto": {"amenaza_encontrada": true, "host_comprometido": "10.10.10.17", "c2_ip": "192.0.2.66", "c2_dominio": "cdn-sync-telemetry.net", "tecnicas": ["T1071.001"], "benignos_descartados": [], "playbook": "", "resumen": "El candidato 10.10.10.17 presenta una puntuación alta debido a su patrón temporal y regular de conexiones, lo que sugiere beaconing. La conexión con el destino externo y dominio sospechoso aumenta la sospecha."}}

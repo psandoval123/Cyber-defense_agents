@@ -1,0 +1,55 @@
+# Laboratorio 3 — Threat hunting proactivo con agente
+#
+# Servicios:
+#   - ollama: runtime del LLM local (razonamiento) y de los embeddings del RAG.
+#   - hunter: contenedor con el agente (LangGraph), el RAG (Chroma) y la interfaz
+#             Streamlit. Lee los logs sintéticos y consulta a Ollama.
+#
+# La red de analítica está aislada; `externa` solo permite a Ollama descargar
+# los modelos la primera vez. El puerto 8501 expone el dashboard al host.
+
+services:
+  ollama:
+    image: ollama/ollama:0.5.4
+    container_name: lab3-ollama
+    networks:
+      - analitica
+      - externa
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: "no"
+
+  hunter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lab3-hunter
+    depends_on:
+      - ollama
+    env_file:
+      - .env
+    networks:
+      # `analitica` para hablar con Ollama; `externa` solo para que el puerto del
+      # dashboard (8501) se pueda publicar al host (una red interna no lo permite).
+      - analitica
+      - externa
+    volumes:
+      # Datos generados, base vectorial, trazas, informes y métricas.
+      - ./output:/lab/output
+    ports:
+      # Dashboard Streamlit (Fase 5).
+      - "8501:8501"
+    stdin_open: true
+    tty: true
+    command: ["sleep", "infinity"]
+    restart: "no"
+
+networks:
+  analitica:
+    driver: bridge
+    internal: true
+  externa:
+    driver: bridge
+
+volumes:
+  ollama_models:

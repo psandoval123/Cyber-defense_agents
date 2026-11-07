@@ -1,0 +1,12 @@
+# Dependencias del Lab 3 (agente de hunting + RAG + interfaz).
+# LLM y embeddings locales vía Ollama (sin claves).
+ollama>=0.4.0
+# Base de conocimiento vectorial (RAG).
+chromadb>=0.5.0,<0.6.0
+# Orquestación del agente multi-paso.
+langgraph>=0.2.0
+langchain-core>=0.3.0
+# Interfaz visual y gráficas.
+streamlit>=1.38.0
+pandas>=2.2.0
+plotly>=5.24.0

@@ -1,0 +1,11 @@
+{
+  "generado": "2026-11-07T19:34:58.548280Z",
+  "n_corridas": 3,
+  "recall_caza": 1,
+  "falsos_positivos_total": 0,
+  "cobertura_attack_prom": 0.5,
+  "iteraciones_prom": 1,
+  "tiempo_prom_s": 58.3,
+  "rag_citado_tasa": 0,
+  "reproducibilidad": 1.0
+}

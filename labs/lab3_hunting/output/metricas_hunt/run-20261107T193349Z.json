@@ -1,0 +1,22 @@
+{
+  "corrida": "20261107T193349Z",
+  "duracion_s": 64.35,
+  "iteraciones_grafo": 1,
+  "amenaza_encontrada": true,
+  "host_detectado": "10.10.10.17",
+  "c2_detectado": "192.0.2.66",
+  "dominio_detectado": "cdn-sync-telemetry.net",
+  "beacon_esperado": {
+    "host": "10.10.10.17",
+    "c2": "192.0.2.66",
+    "dominio": "cdn-sync-telemetry.net"
+  },
+  "recall_caza": 1,
+  "falso_positivo": 0,
+  "tecnicas_detectadas": [
+    "T1071.001"
+  ],
+  "cobertura_attack": 0.5,
+  "rag_citado": false,
+  "playbook": ""
+}
