@@ -1,0 +1,2 @@
+{"evento": "inicio", "modelo": "llama3.2:3b", "auto_aprobar": false, "timestamp": "2026-11-05T21:22:26.873657+00:00"}
+{"evento": "error_llm", "detalle": "model requires more system memory (4.7 GiB) than is available (3.3 GiB) (status code: 500)", "timestamp": "2026-11-05T21:22:26.953956+00:00"}

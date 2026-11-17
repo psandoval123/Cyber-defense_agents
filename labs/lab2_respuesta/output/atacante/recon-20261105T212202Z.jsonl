@@ -1,0 +1,8 @@
+{"evento": "inicio_corrida", "objetivo": "victima", "tecnicas_planeadas": ["T1046", "T1592.002", "T1595.003"], "timestamp": "2026-11-05T21:22:02.660818+00:00"}
+{"comando": ["nmap", "-sS", "-sV", "-T4", "-p-", "--max-retries", "1", "victima"], "descripcion": "Escaneo de puertos y versiones (nmap -sS -sV)", "evento": "inicio_tecnica", "tecnica": "T1046", "timestamp": "2026-11-05T21:22:02.661226+00:00"}
+{"codigo": 0, "evento": "fin_tecnica", "lineas_salida": 11, "tecnica": "T1046", "timestamp": "2026-11-05T21:22:09.784305+00:00"}
+{"comando": ["whatweb", "-a", "3", "http://victima"], "descripcion": "Fingerprinting de tecnologias web (whatweb)", "evento": "inicio_tecnica", "tecnica": "T1592.002", "timestamp": "2026-11-05T21:22:09.784820+00:00"}
+{"codigo": 0, "evento": "fin_tecnica", "lineas_salida": 1, "tecnica": "T1592.002", "timestamp": "2026-11-05T21:22:13.693569+00:00"}
+{"comando": ["gobuster", "dir", "-q", "-t", "20", "-u", "http://victima", "-w", "/usr/share/dirb/wordlists/common.txt"], "descripcion": "Enumeracion de rutas web (gobuster)", "evento": "inicio_tecnica", "tecnica": "T1595.003", "timestamp": "2026-11-05T21:22:13.693962+00:00"}
+{"codigo": 0, "evento": "fin_tecnica", "lineas_salida": 2, "tecnica": "T1595.003", "timestamp": "2026-11-05T21:22:13.788647+00:00"}
+{"evento": "fin_corrida", "objetivo": "victima", "timestamp": "2026-11-05T21:22:13.788819+00:00"}

@@ -1,7 +1,10 @@
 {
-  "actualizado": "2026-10-26T22:51:36.552271+00:00",
-  "ips_bloqueadas": [],
+  "actualizado": "2026-11-05T21:24:33.575841+00:00",
+  "ips_bloqueadas": [
+    "192.168.16.3"
+  ],
   "iptables_input": [
-    "-P INPUT ACCEPT"
+    "-P INPUT ACCEPT",
+    "-A INPUT -s 192.168.16.3/32 -j DROP"
   ]
 }

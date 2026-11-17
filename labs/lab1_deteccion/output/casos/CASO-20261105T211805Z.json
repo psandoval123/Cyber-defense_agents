@@ -1,0 +1,19 @@
+{
+  "id": "CASO-20261105T211805Z",
+  "creado": "2026-11-05T21:18:05.352711+00:00",
+  "titulo": "Reconocimiento en curso",
+  "severidad": "Alta",
+  "tecnicas": [
+    "T1046",
+    "T1595.003",
+    "T1592.002"
+  ],
+  "observables": [
+    "ip=172.30.0.3",
+    "firma=T1595.003",
+    "firma=T1592.002"
+  ],
+  "resumen": "Se ha detectado una serie de alertas de red con firmas desconocidas en el host victima, indicando posibles actividades de reconocimiento y fuerza bruta.",
+  "estado": "abierto",
+  "origen": "agente-deteccion-lab1"
+}
