@@ -1,21 +1,22 @@
 {
-  "corrida": "20261025T122510Z",
+  "corrida": "20261105T211433Z",
   "modelo": "llama3.2:3b",
-  "inicio": "2026-10-25T12:25:10.155548+00:00",
-  "fin": "2026-10-25T12:26:57.920787+00:00",
-  "duracion_s": 107.76,
-  "pasos": 5,
+  "inicio": "2026-11-05T21:14:33.651801+00:00",
+  "fin": "2026-11-05T21:18:52.558714+00:00",
+  "duracion_s": 258.91,
+  "pasos": 6,
   "herramientas_usadas": [
     "consultar_alertas",
     "enriquecer_attack",
     "enriquecer_attack",
-    "crear_caso",
-    "generar_informe"
+    "enriquecer_attack",
+    "crear_caso"
   ],
   "num_llamadas_herramienta": 5,
   "veredicto": "reconocimiento",
   "tecnicas_detectadas": [
     "T1046",
+    "T1592.002",
     "T1595.003"
   ]
 }

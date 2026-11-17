@@ -1,0 +1,25 @@
+{
+  "corrida": "20261105T124903Z",
+  "modelo": "llama3.2:3b",
+  "inicio": "2026-11-05T12:49:03.747966+00:00",
+  "fin": "2026-11-05T12:51:44.251832+00:00",
+  "duracion_s": 160.5,
+  "herramientas_usadas": [
+    "consultar_incidente",
+    "bloquear_ip",
+    "verificar_contencion",
+    "generar_informe_respuesta"
+  ],
+  "ip_atacante": "192.168.16.3",
+  "ip_bloqueada": "192.168.16.3",
+  "aprobacion": "manual",
+  "contencion_ok": true,
+  "tecnicas": [
+    "T1046",
+    "T1592.002",
+    "T1595.003"
+  ],
+  "mttr_s": 828353.87,
+  "primera_alerta": "2026-10-26T22:44:55.543726+0000",
+  "bloqueo_efectivo": "2026-11-05T12:50:49.415610+00:00"
+}

@@ -1,12 +1,13 @@
 {
-  "generado": "2026-10-26T22:50:42.317775Z",
-  "n_corridas": 3,
+  "generado": "2026-11-05T21:26:57.753025Z",
+  "n_corridas": 5,
   "ip_atacante_ground_truth": "192.168.16.3",
-  "mttr_prom_s": 237.11,
+  "mttr_prom_s": 337648.64,
   "tasa_contencion": 1.0,
   "falsos_positivos_respuesta": 0,
   "aprobacion": {
-    "auto": 3
+    "auto": 3,
+    "manual": 2
   },
   "rollback_probado": true,
   "reproducibilidad": 1.0
